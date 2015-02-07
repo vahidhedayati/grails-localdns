@@ -4,3 +4,4 @@ plugin.xml
 *.zip
 *.log
 target-eclipse
+wrapper
