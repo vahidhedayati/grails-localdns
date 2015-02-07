@@ -42,6 +42,21 @@ You can see:
 -Dsun.net.spi.nameservice.provider.1=dns,LocalManagedDns
 ```
 
+When I run:
+http://localhost:8080/grails-localdns/testing/index
+
+````
+ def index() { 
+		System.setProperty("sun.net.spi.nameservice.provider.1", "dns,"+LocalManagedDnsDescriptor.DNS_PROVIDER_NAME)
+		System.setProperty("sun.net.spi.nameservice.provider.2", "dns,sun")
+		Security.setProperty("networkaddress.cache.ttl", "0")
+		def hostName = "google.com"
+		def ipAddress = "192.168.1.4"
+		NameStore.getInstance().put(hostName, ipAddress)
+		performLookup(hostName)
+		render "done lookup"
+	}
+```
 log shows:
 
 ```
