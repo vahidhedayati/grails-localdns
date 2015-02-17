@@ -8,45 +8,32 @@ import org.apache.commons.lang.StringUtils;
 
 import sun.net.spi.nameservice.NameService;
 import sun.net.spi.nameservice.dns.DNSNameService;
-
-/**
- * 
- * @version $Id$
- * @author Roman Kuzmik (rkuzmik@gmail.com)
- */
-@SuppressWarnings("restriction")
-public class LocalManagedDns implements NameService {
-
-	NameService defaultDnsImpl = new DNSJavaNameService();
-
-	/*NameService defaultDnsImpl;
-	public LocalManagedDns() throws Exception {
-		defaultDnsImpl = new DNSNameService();
-	}*/
-	/**
-	 * @see sun.net.spi.nameservice.NameService#getHostByAddr(byte[])
-	 */
-	@Override
-	public String getHostByAddr(byte[] ip) throws UnknownHostException {
-		System.out.println ("---LocalManagedDns getHostByAddr");
-		return defaultDnsImpl.getHostByAddr(ip);
+public class MyNameService implements NameService {
+	static {
+		//System.setProperty("sun.net.spi.nameservice.nameservers", "localhost"); // ETL
+	}
+	NameService ns;
+	public MyNameService() throws Exception {
+		ns = new DNSNameService();
 	}
 
-	/**
-	 * @see sun.net.spi.nameservice.NameService#lookupAllHostAddr(java.lang.String)
-	 */
-	@Override
+
+	public String getHostByAddr(byte[] ip) throws UnknownHostException {
+		System.out.println ("---LocalManagedDns getHostByAddr");
+		return ns.getHostByAddr(ip);
+	}
+
 	public InetAddress[] lookupAllHostAddr(String name)
 			throws UnknownHostException {
 		System.out.println ("---LocalManagedDns lookupAllHostAddr: "+name);
 		String ipAddress = NameStore.getInstance().get(name);
+		System.out.println ("---LocalManagedDns lookupAllHostAddr IP: "+ipAddress);
 		if (StringUtils.isNotEmpty(ipAddress)) {
 			InetAddress address = Inet4Address.getByAddress(Util
 					.textToNumericFormat(ipAddress));
 			return new InetAddress[] { address };
 		} else {
-			return defaultDnsImpl.lookupAllHostAddr(name);
+			return ns.lookupAllHostAddr(name);
 		}
 	}
-
 }

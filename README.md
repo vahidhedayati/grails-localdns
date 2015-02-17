@@ -83,3 +83,37 @@ System.setProperty("sun.net.spi.nameservice.provider.1", "dns,"+LocalManagedDnsD
 ```
 is being ignored 
 
+
+Updated with new simpler override method - still ignored - and in both cases when given an invalid DNS entry - the output shows it attempted to access java.net.InetAddress$1.lookupAllHostAddr rather than local overriden method.
+
+
+```
+NameStore Adding 192.168.1.4
+github.com/192.30.252.129
+NameStore Adding 192.168.1.4
+2015-02-17 09:54:34,091 [http-nio-8080-exec-5] ERROR errors.GrailsExceptionResolver  - UnknownHostException occurred when processing request: [GET] /localdns/testing/index5
+githubbaaa.com: Name or service not known. Stacktrace follows:
+java.net.UnknownHostException: githubbaaa.com: Name or service not known
+	at java.net.InetAddress$1.lookupAllHostAddr(InetAddress.java:901)
+	at java.net.InetAddress.getAddressesFromNameService(InetAddress.java:1293)
+	at java.net.InetAddress.getAllByName0(InetAddress.java:1246)
+	at java.net.InetAddress.getAllByName(InetAddress.java:1162)
+	at java.net.InetAddress.getAllByName(InetAddress.java:1098)
+	at java.net.InetAddress.getByName(InetAddress.java:1048)
+	at localdns.TestingController.index5(TestingController.groovy:106)
+	at grails.plugin.cache.web.filter.PageFragmentCachingFilter.doFilter(PageFragmentCachingFilter.java:198)
+	at grails.plugin.cache.web.filter.AbstractFilter.doFilter(AbstractFilter.java:63)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	at java.lang.Thread.run(Thread.java:745)
+```
+
+
+cat setenv.sh
+``` 
+# export CATALINA_OPTS="$CATALINA_OPTS -Dsun.net.spi.nameservice.provider.1=dns,LocalManagedDns"
+export CATALINA_OPTS="$CATALINA_OPTS -Dsun.net.inetaddr.ttl=0"
+export CATALINA_OPTS="$CATALINA_OPTS -Dsun.net.spi.nameservice.provider.1=dns,mine"
+```
+
+

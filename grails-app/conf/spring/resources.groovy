@@ -1,6 +1,7 @@
-import localdns.LocalManagedDnsDescriptor
+import localdns.MyNameServiceDescriptor
+
 
 // Place your Spring DSL code here
 beans = {
-	NameServiceDescriptor(LocalManagedDnsDescriptor)
+	NameServiceDescriptor(MyNameServiceDescriptor)
 }
